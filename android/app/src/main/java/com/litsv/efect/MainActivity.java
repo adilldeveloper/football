@@ -1,4 +1,4 @@
-package com.example.livef_ootbal_lticket;
+package com.litsv.efect;
 
 import io.flutter.embedding.android.FlutterActivity;
 
