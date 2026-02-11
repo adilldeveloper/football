@@ -15,6 +15,11 @@ class TicketCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
+
+    final Color baseColor = Color(ticket.bgColorValue);
+    final Color darkerColor = darken(baseColor, 0.25);
+
+
     // ===== RESPONSIVE METRICS =====
     final double headerHeight = size.height * 0.52;
     final double overlapOffset = size.height * 0.065;
@@ -24,15 +29,52 @@ class TicketCard extends StatelessWidget {
     final double statusBar = MediaQuery.of(context).padding.top;
     final double closeTop = (statusBar * 0.6).clamp(8.0, 22.0);
 
+
     return Stack(
       children: [
         // ===== BACKGROUND =====
         Column(
           children: [
+
+
             Container(
               height: headerHeight,
-              color: Color(ticket.bgColorValue),
+              child: Stack(
+                children: [
+
+                  // ===== BASE RED GRADIENT =====
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          baseColor,
+                          darken(baseColor, 0.15),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // ===== DIAGONAL DARK OVERLAY =====
+                  ClipPath(
+                    clipper: DiagonalClipper(),
+                    child: Container(
+                      color: darken(baseColor, 0.10),
+                    ),
+                  ),
+
+                  // ===== SHARP EDGE LINE =====
+                  CustomPaint(
+                    painter: EdgeLinePainter(),
+                    size: Size(size.width, headerHeight),
+                  ),
+                ],
+              ),
             ),
+
+
+
             Expanded(
               child: Container(color: const Color(0xFFF4F4F4)),
             ),
@@ -299,4 +341,51 @@ class TicketCard extends StatelessWidget {
       ],
     );
   }
+
+
+
+
+  Color darken(Color color, [double amount = .2]) {
+    final hsl = HSLColor.fromColor(color);
+    final hslDark = hsl.withLightness(
+      (hsl.lightness - amount).clamp(0.0, 1.0),
+    );
+    return hslDark.toColor();
+  }
+
+}
+
+
+class DiagonalClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.moveTo(size.width * 0.68, 0);
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width, size.height * 0.65);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+
+class EdgeLinePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.06)
+      ..strokeWidth = 2;
+
+    canvas.drawLine(
+      Offset(size.width * 0.68, 0),
+      Offset(size.width, size.height * 0.65),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
