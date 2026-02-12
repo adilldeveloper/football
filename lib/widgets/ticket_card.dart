@@ -5,6 +5,7 @@ class TicketCard extends StatelessWidget {
   final TicketModel ticket;
   final int totalTickets;
 
+
   const TicketCard({
     super.key,
     required this.ticket,

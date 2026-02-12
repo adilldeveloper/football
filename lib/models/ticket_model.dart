@@ -1,18 +1,24 @@
 class TicketModel {
   String matchName, name, entrance, section, row, seat, team1Url, team2Url, leagueUrl, seatType, ticketType;
-  int bgColorValue;
+  int bgColorValue; int ticketCount;
+
+
 
   TicketModel({
     required this.matchName, required this.name, required this.entrance,
     required this.section, required this.row, required this.seat,
     required this.team1Url, required this.team2Url, required this.leagueUrl,
     required this.seatType, required this.ticketType, required this.bgColorValue,
+    required this.ticketCount, // 👈 ADD THIS
+
   });
 
   Map<String, dynamic> toMap() => {
+
     'match': matchName, 'name': name, 'entrance': entrance, 'section': section,
     'row': row, 'seat': seat, 't1': team1Url, 't2': team2Url, 'lg': leagueUrl,
-    'st': seatType, 'tt': ticketType, 'bg': bgColorValue,
+    'st': seatType, 'tt': ticketType, 'bg': bgColorValue,'ticketCount': ticketCount,
+
   };
 
   factory TicketModel.fromMap(Map<String, dynamic> map) => TicketModel(
@@ -28,5 +34,7 @@ class TicketModel {
     seatType: map['st'] ?? 'Padded Seat',
     ticketType: map['tt'] ?? 'Adult',
     bgColorValue: map['bg'] ?? 0xFFD11212,
+    ticketCount: map['ticketCount'] ?? 1,
+
   );
 }

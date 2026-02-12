@@ -7,11 +7,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 class TicketCard extends StatelessWidget {
   final TicketModel ticket;
   final int totalTickets;
+  final int ticketCount;
+
 
   const TicketCard({
     super.key,
     required this.ticket,
     required this.totalTickets,
+    required this.ticketCount,
+
   });
 
   @override
@@ -273,69 +277,31 @@ class TicketCard extends StatelessWidget {
 
   */
 
- Widget _buildLogo(String url, double size) {
-    return Container(
+
+  Widget _buildLogo(String url, double size) {
+    return SizedBox(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: Color(ticket.bgColorValue), // ✅ SAME RED AS HEADER
-        shape: BoxShape.circle,
-      ),
-
-      child: ColorFiltered(
-        colorFilter: const ColorFilter.mode(
-          Colors.white,
-          BlendMode.srcIn,
-        ),
-        child: Image.network(
-          url,
-          width: size * 0.7,
-          height: size * 0.7,
-          fit: BoxFit.contain,
-          errorBuilder: (_, __, ___) => Icon(
-            Icons.broken_image_outlined,
-            color: Colors.white54,
-            size: size * 0.5,
+      child: Center(
+        child: SizedBox(
+          width: size * 0.65,   // 🔥 controls visual size
+          height: size * 0.65,
+          child: Image.network(
+            url,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => Icon(
+              Icons.broken_image_outlined,
+              color: Colors.white54,
+              size: size * 0.5,
+            ),
           ),
         ),
       ),
-
-      alignment: Alignment.center,
-
     );
   }
 
 
-  /*child: Image.network(
-        url,
-        width: size * 0.7,
-        height: size * 0.7,
-        fit: BoxFit.contain,
-        errorBuilder: (_, __, ___) => Icon(
-          Icons.broken_image_outlined,
-          color: Colors.white54,
-          size: size * 0.5,
-        ),
-      ),
 
-       */
-
-  // ===== HELPERS =====
- /* Widget _buildLogo(String url, double size) {
-    return ClipOval(
-      child: Container(
-        width: size,
-        height: size,
-        color: Colors.transparent,
-        child: Image.network(
-          url,
-          fit: BoxFit.contain,
-        ),
-      ),
-    );
-  }
-
-  */
 
   Widget _buildInfoRow(
       String l1, String v1, String l2, String v2) {

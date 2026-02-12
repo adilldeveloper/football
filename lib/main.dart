@@ -23,12 +23,14 @@ class InputScreen extends StatefulWidget {
 }
 
 class _InputScreenState extends State<InputScreen> {
-  final controllers = List.generate(11, (_) => TextEditingController());
+  final controllers = List.generate(12, (_) => TextEditingController());
   Color pickerColor = const Color(0xFFD11212);
 
   @override
   void initState() {
     super.initState();
+
+    controllers[11].text = "1";
     controllers[0].text = "Manchester United v Burnley";
     controllers[1].text = "John Doe";
     controllers[2].text = "N410";
@@ -49,6 +51,7 @@ class _InputScreenState extends State<InputScreen> {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getStringList('tickets') ?? [];
 
+
     final newTicket = TicketModel(
       matchName: controllers[0].text,
       name: controllers[1].text,
@@ -62,6 +65,9 @@ class _InputScreenState extends State<InputScreen> {
       seatType: controllers[9].text,
       ticketType: controllers[10].text,
       bgColorValue: pickerColor.value,
+      ticketCount: int.tryParse(controllers[11].text) ?? 1,  // ✅ ADD HERE
+
+
     );
 
     saved.add(jsonEncode(newTicket.toMap()));
@@ -99,6 +105,8 @@ class _InputScreenState extends State<InputScreen> {
                   ]),
                   _field(controllers[10], "Ticket Type"),
                   _field(controllers[9], "Seat Type"),
+                  _field(controllers[11], "Number of Tickets"),
+
                   _field(controllers[6], "Home Logo URL"),
                   _field(controllers[7], "Away Logo URL"),
                   _field(controllers[8], "League Logo URL"),
@@ -250,7 +258,11 @@ class _TicketSwipeScreenState extends State<TicketSwipeScreen> {
               itemCount: tickets.length,
               onPageChanged: (i) => setState(() => _currentIndex = i),
               itemBuilder: (_, i) =>
-                  TicketCard(ticket: tickets[i], totalTickets: tickets.length),
+                  TicketCard(
+                    ticket: tickets[i],
+                    totalTickets: tickets[i].ticketCount,
+                  ),
+
             ),
           ),
 
