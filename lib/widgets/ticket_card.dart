@@ -194,9 +194,11 @@ class TicketCard extends StatelessWidget {
                           Container(
                             height: size.height * 0.05,
                             width: double.infinity,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFE31A1A),
-                              borderRadius: BorderRadius.vertical(
+                            decoration: BoxDecoration(
+                             // color: Color(0xFFE31A1A),
+                              color: Color(ticket.ticketTypeColorValue),
+
+                              borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(14),
                               ),
                             ),

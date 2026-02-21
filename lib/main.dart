@@ -23,6 +23,9 @@ class InputScreen extends StatefulWidget {
 }
 
 class _InputScreenState extends State<InputScreen> {
+
+  Color ticketTypeColor = const Color(0xFFE31A1A);
+
   final controllers = List.generate(12, (_) => TextEditingController());
   Color pickerColor = const Color(0xFFD11212);
 
@@ -66,6 +69,7 @@ class _InputScreenState extends State<InputScreen> {
       ticketType: controllers[10].text,
       bgColorValue: pickerColor.value,
       ticketCount: int.tryParse(controllers[11].text) ?? 1,  // ✅ ADD HERE
+      ticketTypeColorValue: ticketTypeColor.value,
 
 
     );
@@ -115,6 +119,14 @@ class _InputScreenState extends State<InputScreen> {
                     trailing: CircleAvatar(backgroundColor: pickerColor),
                     onTap: _showPicker,
                   ),
+
+                  ListTile(
+                    title: const Text("Ticket Type Color"),
+                    trailing: CircleAvatar(
+                      backgroundColor: ticketTypeColor,
+                    ),
+                    onTap: _showTicketTypeColorPicker,
+                  ),
                 ],
               ),
             ),
@@ -162,7 +174,45 @@ class _InputScreenState extends State<InputScreen> {
       ),
     ),
   );
+
+
+  void _showTicketTypeColorPicker() {
+    showDialog(
+      context: context,
+      builder: (_) {
+        Color tempColor = ticketTypeColor;
+
+        return AlertDialog(
+          title: const Text("Select Ticket Type Color"),
+          content: ColorPicker(
+            pickerColor: ticketTypeColor,
+            onColorChanged: (color) => tempColor = color,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() => ticketTypeColor = tempColor);
+                Navigator.pop(context);
+              },
+              child: const Text("Select"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
+
+
+
+
+//input screen ends here
+
 
 class SavedTicketsListScreen extends StatefulWidget {
   const SavedTicketsListScreen({super.key});
