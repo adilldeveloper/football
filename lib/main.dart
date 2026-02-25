@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'models/ticket_model.dart';
 import 'widgets/ticket_card.dart';
 
@@ -26,6 +28,12 @@ class _InputScreenState extends State<InputScreen> {
 
   Color ticketTypeColor = const Color(0xFFE31A1A);
 
+  final ImagePicker _picker = ImagePicker();
+
+  String? team1LocalPath;
+  String? team2LocalPath;
+  String? leagueLocalPath;
+
   final controllers = List.generate(12, (_) => TextEditingController());
   Color pickerColor = const Color(0xFFD11212);
 
@@ -34,7 +42,7 @@ class _InputScreenState extends State<InputScreen> {
     super.initState();
 
     controllers[11].text = "1";
-    controllers[0].text = "Manchester United v Burnley";
+    controllers[0].text = "New Ticket";
     controllers[1].text = "John Doe";
     controllers[2].text = "N410";
     controllers[3].text = "NE3425";
@@ -44,10 +52,10 @@ class _InputScreenState extends State<InputScreen> {
     controllers[10].text = "Adult";
 
     controllers[6].text =
-    "https://brandlogos.net/wp-content/uploads/2025/04/manchester_united_fc_1970-logo_brandlogos.net_vixfj.png";
-    controllers[7].text = "https://brandlogos.net/wp-content/uploads/2025/04/manchester_united_fc_1970-logo_brandlogos.net_vixfj.png";
+    "";
+    controllers[7].text = "";
     controllers[8].text =
-    "https://static.vecteezy.com/system/resources/previews/066/118/643/non_2x/laliga-logo-transparent-background-football-club-icon-digital-download-free-png.png";
+    "";
   }
 
   Future<void> saveTicket() async {
@@ -62,9 +70,15 @@ class _InputScreenState extends State<InputScreen> {
       section: controllers[3].text,
       row: controllers[4].text,
       seat: controllers[5].text,
-      team1Url: controllers[6].text,
-      team2Url: controllers[7].text,
-      leagueUrl: controllers[8].text,
+
+      team1Url: controllers[6].text.isNotEmpty ? controllers[6].text : null,
+      team2Url: controllers[7].text.isNotEmpty ? controllers[7].text : null,
+      leagueUrl: controllers[8].text.isNotEmpty ? controllers[8].text : null,
+
+      team1LocalPath: team1LocalPath,
+      team2LocalPath: team2LocalPath,
+      leagueLocalPath: leagueLocalPath,
+
       seatType: controllers[9].text,
       ticketType: controllers[10].text,
       bgColorValue: pickerColor.value,
@@ -111,9 +125,57 @@ class _InputScreenState extends State<InputScreen> {
                   _field(controllers[9], "Seat Type"),
                   _field(controllers[11], "Number of Tickets"),
 
-                  _field(controllers[6], "Home Logo URL"),
-                  _field(controllers[7], "Away Logo URL"),
-                  _field(controllers[8], "League Logo URL"),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _field(controllers[6], "Home Logo URL"),
+                      const SizedBox(height: 5),
+                      ElevatedButton(
+                        onPressed: () => _pickImage(1),
+                        child: const Text("Choose Home Logo from Gallery"),
+                      ),
+                      if (team1LocalPath != null)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 5),
+                          child: Icon(Icons.check_circle, color: Colors.green),
+                        ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _field(controllers[7], "Away Logo URL"),
+                      const SizedBox(height: 5),
+                      ElevatedButton(
+                        onPressed: () => _pickImage(2),
+                        child: const Text("Choose Away Logo from Gallery"),
+                      ),
+                      if (team2LocalPath != null)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 5),
+                          child: Icon(Icons.check_circle, color: Colors.green),
+                        ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _field(controllers[8], "League Logo URL"),
+                      const SizedBox(height: 5),
+                      ElevatedButton(
+                        onPressed: () => _pickImage(3),
+                        child: const Text("Choose League Logo from Gallery"),
+                      ),
+                      if (leagueLocalPath != null)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 5),
+                          child: Icon(Icons.check_circle, color: Colors.green),
+                        ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
                   ListTile(
                     title: const Text("BG Color"),
                     trailing: CircleAvatar(backgroundColor: pickerColor),
@@ -204,6 +266,27 @@ class _InputScreenState extends State<InputScreen> {
         );
       },
     );
+  }
+
+
+  Future<void> _pickImage(int type) async {
+    final XFile? image =
+    await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image == null) return;
+
+    setState(() {
+      if (type == 1) {
+        team1LocalPath = image.path;
+        controllers[6].clear();
+      } else if (type == 2) {
+        team2LocalPath = image.path;
+        controllers[7].clear();
+      } else if (type == 3) {
+        leagueLocalPath = image.path;
+        controllers[8].clear();
+      }
+    });
   }
 
 }
@@ -343,4 +426,6 @@ class _TicketSwipeScreenState extends State<TicketSwipeScreen> {
       ),
     );
   }
+
+
 }

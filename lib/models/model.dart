@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/ticket_model.dart';
+import 'dart:io';
 
-import 'package:flutter_svg/flutter_svg.dart';
 
 
 class TicketCard extends StatelessWidget {
@@ -89,9 +89,9 @@ class TicketCard extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildLogo(ticket.team1Url, logoSize),
-                            _buildLogo(ticket.leagueUrl, logoSize * 0.6),
-                            _buildLogo(ticket.team2Url, logoSize),
+                            _buildLogo(ticket.team1LocalPath, ticket.team1Url, logoSize),
+                            _buildLogo(ticket.leagueLocalPath, ticket.leagueUrl, logoSize * 0.6),
+                            _buildLogo(ticket.team2LocalPath, ticket.team2Url, logoSize),
                           ],
                         ),
                       ),
@@ -275,7 +275,7 @@ class TicketCard extends StatelessWidget {
     );
   }
 
-  */
+
 
 
   Widget _buildLogo(String url, double size) {
@@ -301,6 +301,61 @@ class TicketCard extends StatelessWidget {
   }
 
 
+  */
+
+  Widget _buildLogo(
+      String? localPath,
+      String? url,
+      double size,
+      ) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Center(
+        child: SizedBox(
+          width: size * 0.65,
+          height: size * 0.65,
+          child: _buildImage(localPath, url, size),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImage(String? localPath, String? url, double size) {
+    if (localPath != null && localPath.isNotEmpty) {
+      return Image.file(
+        File(localPath),
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => Icon(
+          Icons.broken_image_outlined,
+          color: Colors.white54,
+          size: size * 0.5,
+        ),
+      );
+    }
+
+    if (url != null && url.isNotEmpty) {
+      return Image.network(
+        url,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => Icon(
+          Icons.broken_image_outlined,
+          color: Colors.white54,
+          size: size * 0.5,
+        ),
+      );
+    }
+
+    return Icon(
+      Icons.image_not_supported_outlined,
+      color: Colors.white54,
+      size: size * 0.5,
+    );
+  }
+
+
+
+  ///***************************
 
 
   Widget _buildInfoRow(

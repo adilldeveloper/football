@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/ticket_model.dart';
+import 'dart:io';
+
 
 class TicketCard extends StatelessWidget {
   final TicketModel ticket;
@@ -119,9 +121,14 @@ class TicketCard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildLogo(ticket.team1Url, logoSize),
-                      _buildLogo(ticket.leagueUrl, logoSize * 0.6),
-                      _buildLogo(ticket.team2Url, logoSize),
+                     // _buildLogo(ticket.team1LocalPath, ticket.team1Url, logoSize),
+                      //_buildLogo(ticket.leagueLocalPath, ticket.leagueUrl, logoSize * 0.7),
+                      //_buildLogo(ticket.team2LocalPath, ticket.team2Url, logoSize),
+
+                      _buildLogo(ticket.team1LocalPath, ticket.team1Url, logoSize),
+                      _buildLogo(ticket.leagueLocalPath, ticket.leagueUrl, logoSize * 0.7),
+                      _buildLogo(ticket.team2LocalPath, ticket.team2Url, logoSize),
+
                     ],
                   ),
                 ),
@@ -293,23 +300,63 @@ class TicketCard extends StatelessWidget {
 
   // ===== HELPERS =====
 
-  Widget _buildLogo(String url, double size) {
+
+  Widget _buildLogo(
+      String? localPath,
+      String? url,
+      double size,
+      ) {
     return ClipOval(
       child: SizedBox(
         width: size,
         height: size,
-        child: Image.network(
-          url,
-          fit: BoxFit.contain,
-          errorBuilder: (_, __, ___) => Icon(
-            Icons.broken_image_outlined,
-            color: Colors.white54,
-            size: size * 0.6,
-          ),
-        ),
+        //height: size * 0.75,
+        child: _buildImage(localPath, url, size),
       ),
     );
   }
+
+  Widget _buildImage(String? localPath, String? url, double size) {
+
+    // 1️⃣ Local file first
+    if (localPath != null && localPath.isNotEmpty) {
+      return Image.file(
+        File(localPath),
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => Icon(
+          Icons.broken_image_outlined,
+          color: Colors.white54,
+          size: size * 0.5,
+        ),
+      );
+    }
+
+    // 2️⃣ Network fallback
+    if (url != null && url.isNotEmpty) {
+      return Image.network(
+        url,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => Icon(
+          Icons.broken_image_outlined,
+          color: Colors.white54,
+          size: size * 0.6,
+        ),
+      );
+    }
+
+    // 3️⃣ Nothing selected
+    return Icon(
+      Icons.image_not_supported_outlined,
+      color: Colors.white54,
+      size: size * 0.6,
+    );
+  }
+
+
+
+
+
+
 
   Widget _buildInfoRow(
       String l1, String v1, String l2, String v2) {
