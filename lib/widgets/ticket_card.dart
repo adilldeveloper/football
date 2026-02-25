@@ -316,41 +316,33 @@ class TicketCard extends StatelessWidget {
     );
   }
 
+
+
+
+
   Widget _buildImage(String? localPath, String? url, double size) {
 
-    // 1️⃣ Local file first
     if (localPath != null && localPath.isNotEmpty) {
       return Image.file(
         File(localPath),
-        fit: BoxFit.contain,
-        errorBuilder: (_, __, ___) => Icon(
-          Icons.broken_image_outlined,
-          color: Colors.white54,
-          size: size * 0.5,
-        ),
+        fit: BoxFit.cover,   // 🔥 CHANGED
       );
     }
 
-    // 2️⃣ Network fallback
     if (url != null && url.isNotEmpty) {
       return Image.network(
         url,
-        fit: BoxFit.contain,
-        errorBuilder: (_, __, ___) => Icon(
-          Icons.broken_image_outlined,
-          color: Colors.white54,
-          size: size * 0.6,
-        ),
+        fit: BoxFit.cover,   // 🔥 CHANGED
       );
     }
 
-    // 3️⃣ Nothing selected
     return Icon(
       Icons.image_not_supported_outlined,
       color: Colors.white54,
       size: size * 0.6,
     );
   }
+
 
 
 
