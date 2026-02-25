@@ -121,9 +121,7 @@ class TicketCard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                     // _buildLogo(ticket.team1LocalPath, ticket.team1Url, logoSize),
-                      //_buildLogo(ticket.leagueLocalPath, ticket.leagueUrl, logoSize * 0.7),
-                      //_buildLogo(ticket.team2LocalPath, ticket.team2Url, logoSize),
+
 
                       _buildLogo(ticket.team1LocalPath, ticket.team1Url, logoSize),
                       _buildLogo(ticket.leagueLocalPath, ticket.leagueUrl, logoSize * 0.7),
@@ -301,48 +299,42 @@ class TicketCard extends StatelessWidget {
   // ===== HELPERS =====
 
 
+  //---------------------------
+
+
+
   Widget _buildLogo(
       String? localPath,
       String? url,
       double size,
       ) {
-    return ClipOval(
-      child: SizedBox(
-        width: size,
-        height: size,
-        //height: size * 0.75,
-        child: _buildImage(localPath, url, size),
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Center(
+        child: _buildImage(localPath, url),
       ),
     );
   }
 
-
-
-
-
-  Widget _buildImage(String? localPath, String? url, double size) {
+  Widget _buildImage(String? localPath, String? url) {
 
     if (localPath != null && localPath.isNotEmpty) {
       return Image.file(
         File(localPath),
-        fit: BoxFit.cover,   // 🔥 CHANGED
+        fit: BoxFit.contain,
       );
     }
 
     if (url != null && url.isNotEmpty) {
       return Image.network(
         url,
-        fit: BoxFit.cover,   // 🔥 CHANGED
+        fit: BoxFit.contain,
       );
     }
 
-    return Icon(
-      Icons.image_not_supported_outlined,
-      color: Colors.white54,
-      size: size * 0.6,
-    );
+    return const Icon(Icons.image_not_supported_outlined);
   }
-
 
 
 
